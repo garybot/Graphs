@@ -1,5 +1,8 @@
 
 # Note: This Queue class is sub-optimal. Why?
+# Using a list for storage makes the dequeue
+# method resize the list every call
+
 class Queue():
     def __init__(self):
         self.queue = []
