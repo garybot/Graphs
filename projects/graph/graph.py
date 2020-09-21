@@ -9,23 +9,45 @@ class Graph:
     def __init__(self):
         self.vertices = {}
 
+
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        self.vertices[vertex_id] = set()
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
+        else:
+            print("Vertex is already in Graph.")
+
+
+    def delete_vertex(self, vertex_id):
+        del self.vertices[vertex_id]
+        for node in self.vertices:
+            self.vertices[node].remove(vertex_id)
+
+
+    def delete_edge(self, v1, v2):
+        ## access v1, remove v2
+        ## access v2, remove v1
+        pass
+
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        self.vertices[v1].add(v2)
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            print("Vertex not found.")
+
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
         return self.vertices[vertex_id]
+
 
     def bft(self, starting_vertex):
         """
@@ -43,6 +65,7 @@ class Graph:
                 for node in self.vertices[current]:
                     queue.enqueue(node)
 
+
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
@@ -59,6 +82,7 @@ class Graph:
                 for node in self.vertices[current]:
                     stack.push(node)
 
+
     def dft_recursive(self, starting_vertex, checked = set()):
         """
         Print each vertex in depth-first order
@@ -71,6 +95,7 @@ class Graph:
             print(starting_vertex)
             for node in self.vertices[starting_vertex]:
                 self.dft_recursive(node)
+
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -85,13 +110,11 @@ class Graph:
         while queue.size():     
             current = queue.dequeue()
             if current[-1] == destination_vertex:
-                paths.append(current)
+                return current
             if current[-1] not in visited:
                 visited.add(current[-1])
                 for node in self.vertices[current[-1]]:
                     queue.enqueue(current + [node])
-        paths.sort(key=lambda p : len(p))
-        return paths[0]
 
 
     def dfs(self, starting_vertex, destination_vertex):
@@ -107,15 +130,14 @@ class Graph:
         while stack.size():     
             current = stack.pop()
             if current[-1] == destination_vertex:
-                paths.append(current)
+                return current
             if current[-1] not in visited:
                 visited.add(current[-1])
                 for node in self.vertices[current[-1]]:
                     stack.push(current + [node])
-        paths.sort(key=lambda p : len(p))
-        return paths[0]
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, checked = set()):
+
+    def dfs_recursive(self, starting_vertex, destination_vertex, checked = set(), path = []):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -123,17 +145,21 @@ class Graph:
 
         This should be done using recursion.
         """
-        if destination_vertex in self.vertices[starting_vertex]:
-            return [starting_vertex, destination_vertex]
-        elif len(self.vertices[starting_vertex]):
-            if starting_vertex not in checked:
-                checked.add(starting_vertex)
-                for node in self.vertices[starting_vertex]:
-                    return [starting_vertex] + self.dfs_recursive(node, destination_vertex, checked)
-            else:
-                return []
-        else:
-            return [starting_vertex]
+        ## keep track of the paths somehow?
+
+        if len(path) == 0:
+            path.append(starting_vertex)
+        checked.add(starting_vertex)
+        if starting_vertex == destination_vertex:
+            return path
+        for node in self.vertices[starting_vertex]:
+            if node not in checked:
+                current = self.dfs_recursive(node, destination_vertex, checked, path + [node])
+                if current is not None:
+                    return current
+
+        # paths.sort(key=lambda p : len(p))
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
