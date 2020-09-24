@@ -1,3 +1,8 @@
+import itertools
+import random
+from util import Stack, Queue  # These may come in handy
+
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,8 +50,15 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            self.add_user("John Malkovich") # Kevin Bacon
 
         # Create friendships
+        possible = list(itertools.combinations(self.users, 2))
+        random.shuffle(possible)
+        for i in range((num_users * avg_friendships) // 2):
+            a, b = possible[i]
+            self.add_friendship(a, b)
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,8 +69,17 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        q = Queue()
+        visited = {}
+
+        q.enqueue([user_id])
+
+        while q.size():
+            current = q.dequeue()
+            if current[-1] not in visited:
+                visited[current[-1]] = current
+                for user in self.friendships[current[-1]]:
+
         return visited
 
 

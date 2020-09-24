@@ -83,15 +83,15 @@ class Graph:
                     stack.push(node)
 
 
-    def dft_recursive(self, starting_vertex, checked = set()):
+    def dft_recursive(self, starting_vertex, visited = set()):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        if starting_vertex not in checked:
-            checked.add(starting_vertex)
+        if starting_vertex not in visited:
+            visited.add(starting_vertex)
             print(starting_vertex)
             for node in self.vertices[starting_vertex]:
                 self.dft_recursive(node)
@@ -133,11 +133,11 @@ class Graph:
                 return current
             if current[-1] not in visited:
                 visited.add(current[-1])
-                for node in self.vertices[current[-1]]:
+                for node in self.get_neighbors(current[-1]):
                     stack.push(current + [node])
 
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, checked = set(), path = []):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited = set(), path = []):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -145,20 +145,21 @@ class Graph:
 
         This should be done using recursion.
         """
-        ## keep track of the paths somehow?
 
         if len(path) == 0:
             path.append(starting_vertex)
-        checked.add(starting_vertex)
+
         if starting_vertex == destination_vertex:
             return path
-        for node in self.vertices[starting_vertex]:
-            if node not in checked:
-                current = self.dfs_recursive(node, destination_vertex, checked, path + [node])
+
+        visited.add(starting_vertex)
+        
+        for node in self.get_neighbors(starting_vertex):
+            if node not in visited:
+                current = self.dfs_recursive(node, destination_vertex, visited, path + [node])
+                
                 if current is not None:
                     return current
-
-        # paths.sort(key=lambda p : len(p))
 
 
 if __name__ == '__main__':
