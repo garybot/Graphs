@@ -73,12 +73,12 @@ class SocialGraph:
         visited = {}
 
         q.enqueue([user_id])
-
         while q.size():
             current = q.dequeue()
             if current[-1] not in visited:
                 visited[current[-1]] = current
                 for user in self.friendships[current[-1]]:
+                    q.enqueue(current + [user])
 
         return visited
 
